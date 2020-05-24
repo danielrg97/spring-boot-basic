@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" ><head>
+    <meta charset="UTF-8">
+    <title>Listado Clientes</title>
+</head>
+<body>
+    <section th:fragment="listadoCliente" id="clientes">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>[[#{persona.titulo-list}]]</h4>
+                        </div>
+                        <div th:if="${personas != null and !personas.isEmpty()}">
+                            <table class="table table-striped">
+                                <thead class="thead-dark">
+                                    <th>#</th>
+                                    <th th:text="#{persona.nombre}"></th>
+                                    <th th:text="#{persona.saldo}"></th>
+                                    <th></th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="persona, contador : ${personas}">
+                                        <td th:text="${contador.count}"></td>
+                                        <td th:text="${persona.nombre} + '' + ${persona.apellido}"></td>
+                                        <td th:text="${new java.text.DecimalFormat('$#,##0.00').format(persona.saldo)}"></td>
+                                        <td>
+                                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/editar/} + ${persona.id}" class="btn btn-secondary">
+                                                <i class="fas fa-angle-double-right"></i>  [[#{accion.editar}]]
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/eliminar(id=${persona.id})}" class="btn btn-danger">
+                                                <i class="fas fa-times"></i>  [[#{accion.eliminar}]]
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center p-2" th:if="${personas == null or personas.isEmpty()}">
+                            No hay clientes.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center bg-danger text-white mb-3">
+                        <div class="card-body">
+                            <h3 th:text="#{persona.saldoTotal}"></h3>
+                            <h4 class="display-4">
+                                [[${new java.text.DecimalFormat('$#,##0.00').format(saldoTotal)}]]
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="card text-center bg-success text-white mb-3">
+                        <div class="card-body">
+                            <h3 th:text="#{persona.totalClientes}"></h3>
+                            <h4 class="display-4">
+                                <i class="fas fa-user"></i> [[${totalClientes}]]
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
